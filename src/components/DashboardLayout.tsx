@@ -26,8 +26,8 @@ const mockCourses = [
     progress: 75,
     nextClass: 'Today, 2:00 PM',
     deadlines: [
-      { title: 'Calculus Assignment', date: 'Tomorrow', type: 'assignment' },
-      { title: 'Midterm Exam', date: 'In 5 days', type: 'exam' },
+      { title: 'Calculus Assignment', date: 'Tomorrow', type: 'assignment' as const },
+      { title: 'Midterm Exam', date: 'In 5 days', type: 'exam' as const },
     ],
   },
   {
@@ -36,7 +36,7 @@ const mockCourses = [
     progress: 60,
     nextClass: 'Tomorrow, 10:00 AM',
     deadlines: [
-      { title: 'Lab Report', date: 'In 3 days', type: 'project' },
+      { title: 'Lab Report', date: 'In 3 days', type: 'project' as const },
     ],
   },
   {
@@ -45,7 +45,7 @@ const mockCourses = [
     progress: 82,
     nextClass: 'Wed, 1:00 PM',
     deadlines: [
-      { title: 'Coding Challenge', date: 'In 2 days', type: 'assignment' },
+      { title: 'Coding Challenge', date: 'In 2 days', type: 'assignment' as const },
     ],
   },
 ];
@@ -88,7 +88,7 @@ const mockTodos = [
     due: 'Tomorrow, 11:59 PM',
     completed: false,
     course: 'Mathematics',
-    type: 'assignment',
+    type: 'assignment' as const,
   },
   {
     id: '2',
@@ -96,7 +96,7 @@ const mockTodos = [
     due: 'Today, 6:00 PM',
     completed: false,
     course: 'Physics',
-    type: 'reading',
+    type: 'reading' as const,
   },
   {
     id: '3',
@@ -104,7 +104,7 @@ const mockTodos = [
     due: 'In 2 days',
     completed: true,
     course: 'Computer Science',
-    type: 'quiz',
+    type: 'quiz' as const,
   },
 ];
 
@@ -114,21 +114,21 @@ const mockNotifications = [
     message: 'Your Mathematics assignment is due tomorrow',
     time: '1 hour ago',
     read: false,
-    type: 'deadline',
+    type: 'deadline' as const,
   },
   {
     id: '2',
     message: 'Professor Williams left feedback on your essay',
     time: '3 hours ago',
     read: false,
-    type: 'feedback',
+    type: 'feedback' as const,
   },
   {
     id: '3',
     message: 'New course materials uploaded for Physics',
     time: 'Yesterday',
     read: true,
-    type: 'update',
+    type: 'update' as const,
   },
 ];
 
@@ -137,7 +137,7 @@ const mockResources = [
     id: '1',
     title: 'Calculus Made Easy: Derivatives',
     source: 'Khan Academy',
-    type: 'video',
+    type: 'video' as const,
     relevantSubject: 'Mathematics',
     saved: false,
     url: '#',
@@ -146,7 +146,7 @@ const mockResources = [
     id: '2',
     title: "Understanding Newton's Laws of Motion",
     source: 'MIT OpenCourseware',
-    type: 'article',
+    type: 'article' as const,
     relevantSubject: 'Physics',
     saved: true,
     url: '#',
@@ -155,7 +155,7 @@ const mockResources = [
     id: '3',
     title: 'Data Structures Practice Problems',
     source: 'LeetCode',
-    type: 'practice',
+    type: 'practice' as const,
     relevantSubject: 'Computer Science',
     saved: false,
     url: '#',
@@ -211,7 +211,7 @@ const mockAchievements = [
     description: 'Study for 7 consecutive days',
     progress: 85,
     completed: false,
-    icon: 'flame',
+    icon: 'flame' as const,
   },
   {
     id: '2',
@@ -219,7 +219,7 @@ const mockAchievements = [
     description: 'Complete all mathematics assignments with grade A',
     progress: 100,
     completed: true,
-    icon: 'star',
+    icon: 'star' as const,
   },
   {
     id: '3',
@@ -227,7 +227,7 @@ const mockAchievements = [
     description: 'Score perfectly on 5 quizzes',
     progress: 60,
     completed: false,
-    icon: 'award',
+    icon: 'award' as const,
   },
 ];
 
