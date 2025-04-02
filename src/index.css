@@ -110,3 +110,84 @@
     animation: progress-fill 1s ease-in-out forwards;
   }
 }
+
+/* Responsive utils */
+@layer utilities {
+  .responsive-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .mobile-only {
+    @apply block md:hidden;
+  }
+  
+  .desktop-only {
+    @apply hidden md:block;
+  }
+  
+  .flex-responsive {
+    @apply flex flex-col md:flex-row;
+  }
+  
+  .grid-responsive-2 {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+  
+  .grid-responsive-3 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+  
+  .grid-responsive-4 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
+  }
+}
+
+/* Animation for progress and cards */
+@keyframes progress-fill {
+  0% { width: 0%; }
+  100% { width: var(--progress-value); }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+/* Media queries for better responsive design */
+@media (max-width: 640px) {
+  .card-header {
+    @apply flex-col items-start;
+  }
+  
+  .card-actions {
+    @apply w-full justify-between mt-2;
+  }
+  
+  .hide-on-mobile {
+    display: none;
+  }
+}
+
+/* Improved scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}

@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useToast } from '@/hooks/use-toast';
 
 interface Flashcard {
   id: string;
@@ -32,6 +34,8 @@ const LearningTools: React.FC<LearningToolsProps> = ({ flashcards }) => {
     },
   ]);
   const [textToSpeak, setTextToSpeak] = useState('');
+  const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   const handleNextCard = () => {
     setActiveFlashcard((prev) => (prev + 1) % flashcards.length);
@@ -57,10 +61,20 @@ const LearningTools: React.FC<LearningToolsProps> = ({ flashcards }) => {
 
     // Simulate AI response (in a real app, this would call an API)
     setTimeout(() => {
+      let response = `I'll help you with "${chatMessage}". What specific aspect would you like me to explain?`;
+      
+      if (chatMessage.toLowerCase().includes('calculus')) {
+        response = "Calculus is the mathematical study of continuous change. The main concepts are limits, derivatives, and integrals. Would you like me to explain any of these concepts in more detail?";
+      } else if (chatMessage.toLowerCase().includes('physics')) {
+        response = "Physics is a natural science that studies matter, its motion and behavior through space and time. What specific physics topic are you studying?";
+      } else if (chatMessage.toLowerCase().includes('programming')) {
+        response = "Programming involves creating sets of instructions for computers to follow. What programming language or concept are you learning?";
+      }
+      
       setChatHistory((prev) => [
         ...prev,
         {
-          message: `I'll help you with "${chatMessage}". What specific aspect would you like me to explain?`,
+          message: response,
           isUser: false,
         },
       ]);
@@ -70,8 +84,22 @@ const LearningTools: React.FC<LearningToolsProps> = ({ flashcards }) => {
   };
 
   const handleTextToSpeech = () => {
+    if (!textToSpeak.trim()) return;
+    
+    toast({
+      title: "Text to Speech",
+      description: "Converting text to speech...",
+      duration: 3000,
+    });
+    
     // In a real app, this would call a text-to-speech API
-    alert(`Text to speech would play: ${textToSpeak}`);
+    setTimeout(() => {
+      toast({
+        title: "Speech Generated",
+        description: "Text successfully converted to speech",
+        duration: 3000,
+      });
+    }, 1500);
   };
 
   return (
@@ -119,24 +147,24 @@ const LearningTools: React.FC<LearningToolsProps> = ({ flashcards }) => {
                 <div className="flex justify-between">
                   <Button
                     variant="outline"
-                    size="sm"
+                    size={isMobile ? "icon" : "sm"}
                     onClick={handlePrevCard}
                   >
-                    Previous
+                    {isMobile ? "←" : "Previous"}
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setShowAnswer(!showAnswer)}
                   >
-                    {showAnswer ? "Hide Answer" : "Show Answer"}
+                    {showAnswer ? "Hide" : "Show"}
                   </Button>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size={isMobile ? "icon" : "sm"}
                     onClick={handleNextCard}
                   >
-                    Next
+                    {isMobile ? "→" : "Next"}
                   </Button>
                 </div>
               </div>
@@ -176,9 +204,9 @@ const LearningTools: React.FC<LearningToolsProps> = ({ flashcards }) => {
                   placeholder="Ask anything about your studies..."
                   className="flex-1"
                 />
-                <Button type="submit" size="sm">
-                  <MessageSquare className="h-4 w-4 mr-1" />
-                  Send
+                <Button type="submit" size={isMobile ? "icon" : "sm"}>
+                  <MessageSquare className="h-4 w-4" />
+                  {!isMobile && <span className="ml-1">Send</span>}
                 </Button>
               </form>
             </div>
@@ -194,7 +222,7 @@ const LearningTools: React.FC<LearningToolsProps> = ({ flashcards }) => {
                   value={textToSpeak}
                   onChange={(e) => setTextToSpeak(e.target.value)}
                   placeholder="Enter text to be converted to speech..."
-                  className="h-[100px]"
+                  className="h-[100px] resize-none"
                 />
               </div>
               <Button

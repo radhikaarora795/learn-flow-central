@@ -156,8 +156,7 @@ const StudyTimer: React.FC<StudyTimerProps> = ({
           
           <Progress 
             value={calculateProgress()} 
-            className="w-full h-2 mb-6" 
-            indicatorColor={mode === 'focus' ? 'bg-learn-primary' : 'bg-learn-accent'}
+            className={`w-full h-2 mb-6 ${mode === 'focus' ? 'bg-learn-primary' : 'bg-learn-accent'}`}
           />
           
           <div className="flex space-x-4">
