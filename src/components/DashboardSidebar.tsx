@@ -13,11 +13,7 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface DashboardSidebarProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
-}
+import { useDashboard } from '@/contexts/DashboardContext';
 
 interface SidebarItem {
   name: string;
@@ -25,10 +21,9 @@ interface SidebarItem {
   id: string;
 }
 
-const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
-  activeSection,
-  onSectionChange,
-}) => {
+const DashboardSidebar: React.FC = () => {
+  const { activeSection, setActiveSection } = useDashboard();
+
   const mainMenuItems: SidebarItem[] = [
     { name: 'Dashboard', icon: <Home size={20} />, id: 'dashboard' },
     { name: 'Courses', icon: <BookOpen size={20} />, id: 'courses' },
@@ -59,7 +54,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             {mainMenuItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => onSectionChange(item.id)}
+                onClick={() => setActiveSection(item.id)}
                 className={cn(
                   'w-full flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                   activeSection === item.id
@@ -81,7 +76,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
               {secondaryMenuItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => onSectionChange(item.id)}
+                  onClick={() => setActiveSection(item.id)}
                   className={cn(
                     'w-full flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                     activeSection === item.id
