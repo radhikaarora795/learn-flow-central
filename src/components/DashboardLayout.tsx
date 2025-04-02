@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import DashboardSidebar from './DashboardSidebar';
 import UserProfileCard from './UserProfileCard';
@@ -9,7 +8,7 @@ import RecommendedResources from './RecommendedResources';
 import StudyPlanner from './StudyPlanner';
 import LearningTools from './LearningTools';
 import AchievementsCard from './AchievementsCard';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 // Mock data
 const mockUser = {
@@ -145,7 +144,7 @@ const mockResources = [
   },
   {
     id: '2',
-    title: 'Understanding Newton's Laws of Motion',
+    title: "Understanding Newton's Laws of Motion",
     source: 'MIT OpenCourseware',
     type: 'article',
     relevantSubject: 'Physics',
