@@ -1,92 +1,114 @@
 
 import React from 'react';
 import {
-  Home,
   BookOpen,
-  BarChart2,
   Calendar,
-  CheckSquare,
-  BookmarkPlus,
   Clock,
-  Award,
+  FileText,
+  Home,
   Settings,
+  Award,
   User,
+  Lightbulb,
+  MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface SidebarItemProps {
-  icon: React.ElementType;
-  label: string;
-  isActive?: boolean;
-  onClick?: () => void;
-}
-
-const SidebarItem: React.FC<SidebarItemProps> = ({
-  icon: Icon,
-  label,
-  isActive = false,
-  onClick,
-}) => {
-  return (
-    <li>
-      <button
-        onClick={onClick}
-        className={cn(
-          'flex items-center w-full space-x-3 px-4 py-2.5 rounded-lg transition-colors',
-          isActive
-            ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-            : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
-        )}
-      >
-        <Icon size={20} />
-        <span className="font-medium">{label}</span>
-      </button>
-    </li>
-  );
-};
 
 interface DashboardSidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
 }
 
+interface SidebarItem {
+  name: string;
+  icon: React.ReactNode;
+  id: string;
+}
+
 const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   activeSection,
   onSectionChange,
 }) => {
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home },
-    { id: 'courses', label: 'Courses', icon: BookOpen },
-    { id: 'progress', label: 'Progress', icon: BarChart2 },
-    { id: 'schedule', label: 'Schedule', icon: Calendar },
-    { id: 'tasks', label: 'Tasks', icon: CheckSquare },
-    { id: 'resources', label: 'Resources', icon: BookmarkPlus },
-    { id: 'planner', label: 'Study Planner', icon: Clock },
-    { id: 'achievements', label: 'Achievements', icon: Award },
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'settings', label: 'Settings', icon: Settings },
+  const mainMenuItems: SidebarItem[] = [
+    { name: 'Dashboard', icon: <Home size={20} />, id: 'dashboard' },
+    { name: 'Courses', icon: <BookOpen size={20} />, id: 'courses' },
+    { name: 'Schedule', icon: <Calendar size={20} />, id: 'schedule' },
+    { name: 'Tasks', icon: <Clock size={20} />, id: 'tasks' },
+    { name: 'Resources', icon: <FileText size={20} />, id: 'resources' },
+    { name: 'AI Assistant', icon: <MessageSquare size={20} />, id: 'assistant' },
+  ];
+
+  const secondaryMenuItems: SidebarItem[] = [
+    { name: 'Achievements', icon: <Award size={20} />, id: 'achievements' },
+    { name: 'Profile', icon: <User size={20} />, id: 'profile' },
+    { name: 'Settings', icon: <Settings size={20} />, id: 'settings' },
   ];
 
   return (
-    <div className="bg-sidebar h-screen w-64 fixed left-0 top-0 border-r border-sidebar-border">
-      <div className="px-4 py-6">
-        <h1 className="text-xl font-bold text-white flex items-center">
-          <span className="text-learn-accent mr-2">Learn</span>Flow
-        </h1>
+    <div className="w-64 fixed inset-y-0 left-0 bg-card border-r shadow-sm z-10">
+      <div className="flex flex-col h-full">
+        <div className="p-4 border-b">
+          <div className="flex items-center space-x-2">
+            <Lightbulb className="h-6 w-6 text-learn-primary" />
+            <h1 className="text-xl font-semibold">LearnFlow</h1>
+          </div>
+        </div>
+
+        <div className="flex-1 py-6 px-4 space-y-6 overflow-y-auto">
+          <nav className="space-y-1">
+            {mainMenuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => onSectionChange(item.id)}
+                className={cn(
+                  'w-full flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                  activeSection === item.id
+                    ? 'bg-learn-primary text-white'
+                    : 'text-muted-foreground hover:bg-muted'
+                )}
+              >
+                {item.icon}
+                <span>{item.name}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="pt-6 border-t">
+            <p className="px-3 text-xs font-semibold text-muted-foreground mb-2 uppercase">
+              User
+            </p>
+            <nav className="space-y-1">
+              {secondaryMenuItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => onSectionChange(item.id)}
+                  className={cn(
+                    'w-full flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                    activeSection === item.id
+                      ? 'bg-learn-primary text-white'
+                      : 'text-muted-foreground hover:bg-muted'
+                  )}
+                >
+                  {item.icon}
+                  <span>{item.name}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        <div className="p-4 border-t">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-full bg-learn-primary flex items-center justify-center text-white font-medium">
+              AJ
+            </div>
+            <div>
+              <p className="text-sm font-medium">Alex Johnson</p>
+              <p className="text-xs text-muted-foreground">Student</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <nav className="mt-6">
-        <ul className="space-y-1 px-2">
-          {menuItems.map((item) => (
-            <SidebarItem
-              key={item.id}
-              icon={item.icon}
-              label={item.label}
-              isActive={activeSection === item.id}
-              onClick={() => onSectionChange(item.id)}
-            />
-          ))}
-        </ul>
-      </nav>
     </div>
   );
 };

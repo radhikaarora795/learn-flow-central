@@ -8,9 +8,16 @@ import RecommendedResources from './RecommendedResources';
 import StudyPlanner from './StudyPlanner';
 import LearningTools from './LearningTools';
 import AchievementsCard from './AchievementsCard';
+import AIChatbox from './AIChatbox';
 import { useToast } from '@/hooks/use-toast';
+import { 
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+import { Button } from '@/components/ui/button';
+import { MessageSquare } from 'lucide-react';
 
-// Mock data
 const mockUser = {
   name: 'Alex Johnson',
   avatarUrl: '',
@@ -235,6 +242,7 @@ const DashboardLayout: React.FC = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [resources, setResources] = useState(mockResources);
   const { toast } = useToast();
+  const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
 
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
@@ -270,53 +278,144 @@ const DashboardLayout: React.FC = () => {
       />
       
       <div className="flex-1 p-6 ml-64">
-        <h1 className="text-2xl font-bold mb-6">Learning Dashboard</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Learning Dashboard</h1>
+          
+          <div className="md:hidden">
+            <Drawer open={isMobileChatOpen} onOpenChange={setIsMobileChatOpen}>
+              <DrawerTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <MessageSquare className="h-5 w-5" />
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent className="h-[80vh]">
+                <div className="p-4 h-full">
+                  <AIChatbox />
+                </div>
+              </DrawerContent>
+            </Drawer>
+          </div>
+        </div>
         
         {activeSection === 'dashboard' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="lg:col-span-1">
-              <UserProfileCard {...mockUser} />
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
+              <div className="md:col-span-1">
+                <UserProfileCard {...mockUser} />
+              </div>
+              
+              <div className="md:col-span-2">
+                <CourseOverview courses={mockCourses} />
+              </div>
+              
+              <div className="md:col-span-2">
+                <ProgressTracking subjects={mockSubjects} />
+              </div>
+              
+              <div className="md:col-span-1">
+                <StudyPlanner todaySessions={mockStudySessions} />
+              </div>
+              
+              <div className="md:col-span-1">
+                <TodoList todos={mockTodos} notifications={mockNotifications} />
+              </div>
+              
+              <div className="md:col-span-2">
+                <RecommendedResources 
+                  resources={resources} 
+                  onSaveResource={handleSaveResource} 
+                />
+              </div>
+              
+              <div className="md:col-span-1">
+                <LearningTools flashcards={mockFlashcards} />
+              </div>
+              
+              <div className="md:col-span-3">
+                <AchievementsCard 
+                  achievements={mockAchievements} 
+                  streak={7} 
+                  level={12} 
+                  xp={2450} 
+                  nextLevelXp={3000}
+                />
+              </div>
             </div>
             
-            <div className="lg:col-span-3">
+            <div className="hidden md:block md:col-span-1 lg:col-span-1">
+              <AIChatbox />
+            </div>
+          </div>
+        )}
+        
+        {activeSection === 'courses' && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2">
               <CourseOverview courses={mockCourses} />
             </div>
-            
-            <div className="lg:col-span-2">
+            <div className="md:col-span-1">
               <ProgressTracking subjects={mockSubjects} />
             </div>
-            
-            <div className="lg:col-span-2">
+          </div>
+        )}
+        
+        {activeSection === 'schedule' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-1">
+              <StudyPlanner todaySessions={mockStudySessions} />
+            </div>
+            <div className="md:col-span-1">
               <TodoList todos={mockTodos} notifications={mockNotifications} />
             </div>
-            
-            <div className="lg:col-span-2">
+          </div>
+        )}
+        
+        {activeSection === 'resources' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-1">
               <RecommendedResources 
                 resources={resources} 
                 onSaveResource={handleSaveResource} 
               />
             </div>
-            
-            <div className="lg:col-span-2">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-                <StudyPlanner todaySessions={mockStudySessions} />
-                <LearningTools flashcards={mockFlashcards} />
-              </div>
-            </div>
-            
-            <div className="lg:col-span-4">
-              <AchievementsCard 
-                achievements={mockAchievements} 
-                streak={7} 
-                level={12} 
-                xp={2450} 
-                nextLevelXp={3000}
-              />
+            <div className="md:col-span-1">
+              <LearningTools flashcards={mockFlashcards} />
             </div>
           </div>
         )}
         
-        {activeSection !== 'dashboard' && (
+        {activeSection === 'achievements' && (
+          <div>
+            <AchievementsCard 
+              achievements={mockAchievements} 
+              streak={7} 
+              level={12} 
+              xp={2450} 
+              nextLevelXp={3000}
+            />
+          </div>
+        )}
+        
+        {activeSection === 'profile' && (
+          <div className="flex items-center justify-center h-[80vh]">
+            <div className="max-w-md w-full">
+              <UserProfileCard {...mockUser} />
+              <div className="mt-6 p-6 bg-card rounded-lg border shadow-sm">
+                <h2 className="text-xl font-semibold mb-4">Profile Settings</h2>
+                <p className="text-muted-foreground mb-4">
+                  This section is under development. Profile management features coming soon.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {activeSection !== 'dashboard' && 
+         activeSection !== 'courses' && 
+         activeSection !== 'schedule' && 
+         activeSection !== 'resources' && 
+         activeSection !== 'achievements' && 
+         activeSection !== 'profile' && (
           <div className="flex items-center justify-center h-[80vh]">
             <div className="text-center">
               <h2 className="text-xl font-semibold mb-2">
