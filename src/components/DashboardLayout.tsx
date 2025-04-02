@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import DashboardSidebar from './DashboardSidebar';
 import UserProfileCard from './UserProfileCard';
@@ -9,6 +10,11 @@ import StudyPlanner from './StudyPlanner';
 import LearningTools from './LearningTools';
 import AchievementsCard from './AchievementsCard';
 import AIChatbox from './AIChatbox';
+import StudyTimer from './StudyTimer';
+import ProfileSettingsForm from './ProfileSettingsForm';
+import CourseSettingsForm from './CourseSettingsForm';
+import TaskSettingsForm from './TaskSettingsForm';
+import SettingsPanel from './SettingsPanel';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Drawer,
@@ -243,6 +249,18 @@ const DashboardLayout: React.FC = () => {
   const [resources, setResources] = useState(mockResources);
   const { toast } = useToast();
   const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
+  
+  const [userProfile, setUserProfile] = useState(mockUser);
+  const [userCourses, setUserCourses] = useState(mockCourses);
+  const [userTasks, setUserTasks] = useState(mockTodos);
+  const [appSettings, setAppSettings] = useState({
+    notifications: true,
+    darkMode: false,
+    soundEffects: true,
+    soundVolume: 80,
+    focusTime: 25,
+    breakTime: 5,
+  });
 
   const handleSectionChange = (section: string) => {
     setActiveSection(section);
@@ -268,6 +286,29 @@ const DashboardLayout: React.FC = () => {
         duration: 3000,
       });
     }
+  };
+  
+  const handleProfileUpdate = (data: any) => {
+    setUserProfile({
+      ...userProfile,
+      ...data,
+    });
+    toast({
+      title: "Profile updated",
+      description: "Your profile information has been updated successfully.",
+    });
+  };
+  
+  const handleCoursesUpdate = (courses: any) => {
+    setUserCourses(courses);
+  };
+  
+  const handleTasksUpdate = (tasks: any) => {
+    setUserTasks(tasks);
+  };
+  
+  const handleSettingsUpdate = (settings: any) => {
+    setAppSettings(settings);
   };
 
   return (
@@ -301,11 +342,11 @@ const DashboardLayout: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
               <div className="md:col-span-1">
-                <UserProfileCard {...mockUser} />
+                <UserProfileCard {...userProfile} />
               </div>
               
               <div className="md:col-span-2">
-                <CourseOverview courses={mockCourses} />
+                <CourseOverview courses={userCourses} />
               </div>
               
               <div className="md:col-span-2">
@@ -313,11 +354,15 @@ const DashboardLayout: React.FC = () => {
               </div>
               
               <div className="md:col-span-1">
-                <StudyPlanner todaySessions={mockStudySessions} />
+                <StudyTimer 
+                  focusTime={appSettings.focusTime} 
+                  breakTime={appSettings.breakTime}
+                  soundEnabled={appSettings.soundEffects}
+                />
               </div>
               
               <div className="md:col-span-1">
-                <TodoList todos={mockTodos} notifications={mockNotifications} />
+                <TodoList todos={userTasks} notifications={mockNotifications} />
               </div>
               
               <div className="md:col-span-2">
@@ -325,6 +370,10 @@ const DashboardLayout: React.FC = () => {
                   resources={resources} 
                   onSaveResource={handleSaveResource} 
                 />
+              </div>
+              
+              <div className="md:col-span-1">
+                <StudyPlanner todaySessions={mockStudySessions} />
               </div>
               
               <div className="md:col-span-1">
@@ -351,7 +400,7 @@ const DashboardLayout: React.FC = () => {
         {activeSection === 'courses' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
-              <CourseOverview courses={mockCourses} />
+              <CourseOverview courses={userCourses} />
             </div>
             <div className="md:col-span-1">
               <ProgressTracking subjects={mockSubjects} />
@@ -362,10 +411,29 @@ const DashboardLayout: React.FC = () => {
         {activeSection === 'schedule' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-1">
-              <StudyPlanner todaySessions={mockStudySessions} />
+              <StudyTimer 
+                focusTime={appSettings.focusTime} 
+                breakTime={appSettings.breakTime}
+                soundEnabled={appSettings.soundEffects}
+              />
             </div>
             <div className="md:col-span-1">
-              <TodoList todos={mockTodos} notifications={mockNotifications} />
+              <StudyPlanner todaySessions={mockStudySessions} />
+            </div>
+          </div>
+        )}
+        
+        {activeSection === 'tasks' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-1">
+              <TodoList todos={userTasks} notifications={mockNotifications} />
+            </div>
+            <div className="md:col-span-1">
+              <StudyTimer 
+                focusTime={appSettings.focusTime} 
+                breakTime={appSettings.breakTime}
+                soundEnabled={appSettings.soundEffects}
+              />
             </div>
           </div>
         )}
@@ -384,6 +452,14 @@ const DashboardLayout: React.FC = () => {
           </div>
         )}
         
+        {activeSection === 'assistant' && (
+          <div className="flex justify-center">
+            <div className="w-full max-w-3xl">
+              <AIChatbox />
+            </div>
+          </div>
+        )}
+        
         {activeSection === 'achievements' && (
           <div>
             <AchievementsCard 
@@ -397,33 +473,34 @@ const DashboardLayout: React.FC = () => {
         )}
         
         {activeSection === 'profile' && (
-          <div className="flex items-center justify-center h-[80vh]">
-            <div className="max-w-md w-full">
-              <UserProfileCard {...mockUser} />
-              <div className="mt-6 p-6 bg-card rounded-lg border shadow-sm">
-                <h2 className="text-xl font-semibold mb-4">Profile Settings</h2>
-                <p className="text-muted-foreground mb-4">
-                  This section is under development. Profile management features coming soon.
-                </p>
-              </div>
+          <div className="flex items-center justify-center">
+            <div className="w-full max-w-3xl">
+              <ProfileSettingsForm 
+                initialData={userProfile} 
+                onSave={handleProfileUpdate}
+              />
             </div>
           </div>
         )}
         
-        {activeSection !== 'dashboard' && 
-         activeSection !== 'courses' && 
-         activeSection !== 'schedule' && 
-         activeSection !== 'resources' && 
-         activeSection !== 'achievements' && 
-         activeSection !== 'profile' && (
-          <div className="flex items-center justify-center h-[80vh]">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold mb-2">
-                {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} Section
-              </h2>
-              <p className="text-muted-foreground">
-                This section is under development. Please check back later.
-              </p>
+        {activeSection === 'settings' && (
+          <div className="flex items-center justify-center">
+            <div className="w-full max-w-3xl">
+              <SettingsPanel 
+                onSave={handleSettingsUpdate}
+                defaultSettings={appSettings}
+              />
+              <div className="mt-8 space-y-8">
+                <CourseSettingsForm 
+                  courses={userCourses}
+                  onSave={handleCoursesUpdate}
+                />
+                <TaskSettingsForm 
+                  tasks={userTasks}
+                  courses={userCourses}
+                  onSave={handleTasksUpdate}
+                />
+              </div>
             </div>
           </div>
         )}
